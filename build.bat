@@ -1,0 +1,30 @@
+@echo off
+setlocal
+cd /d "%~dp0"
+
+rem Ê¹ÓÃ Windows ×Ô´øµÄ .NET Framework ±àÒëÆ÷(Win10/11 Ãâ°²×°)
+set "CSC=%WINDIR%\Microsoft.NET\Framework64\v4.0.30319\csc.exe"
+if not exist "%CSC%" set "CSC=%WINDIR%\Microsoft.NET\Framework\v4.0.30319\csc.exe"
+if not exist "%CSC%" (
+  echo [ERROR] csc.exe not found. Please make sure .NET Framework 4.x is installed.
+  pause
+  exit /b 1
+)
+
+if not exist "dist" mkdir "dist"
+
+"%CSC%" /nologo /target:winexe /optimize+ /platform:anycpu ^
+  /win32icon:"assets\icon.ico" /out:"dist\ÒôÆµÇÐ»»Æ÷.exe" ^
+  /r:System.dll /r:System.Core.dll /r:System.Drawing.dll /r:System.Windows.Forms.dll ^
+  "src\AudioOutputSwitcher.cs"
+
+if errorlevel 1 (
+  echo.
+  echo [ERROR] Build failed.
+  pause
+  exit /b 1
+)
+
+echo.
+echo [OK] Build finished: dist\ÒôÆµÇÐ»»Æ÷.exe
+pause
